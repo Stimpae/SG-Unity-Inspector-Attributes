@@ -1,0 +1,13 @@
+{
+  "name": "com.stimpae.sginspectorattributes",
+  "version": "1.0.0",
+  "displayName": "SG Inspector Attributes",
+  "description": "A collection of custom inspector attributes for Unity.",
+  "unity": "2022.1",
+  "author": {
+    "name": "Sam Stamp",
+    "email": "samstamp@thundertalegames.uk",
+    "url": "samstamp.co.uk"
+  }
+}
+
