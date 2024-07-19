@@ -2,7 +2,7 @@ using SG.SG_Inspector_Attributes.Runtime.MiscAttributes;
 using UnityEditor;
 using UnityEngine;
 
-namespace SG.SG_Inspector_Attributes.Editor.MiscAttributes {
+namespace TTG.TTG_Editor_Attributes.Editor.EssentialAttributes {
     [CustomPropertyDrawer(typeof(InfoBoxAttribute))]
     public class InfoBoxDrawer : DecoratorDrawer {
         public override void OnGUI(Rect position) {

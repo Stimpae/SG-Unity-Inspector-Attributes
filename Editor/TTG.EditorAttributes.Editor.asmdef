@@ -1,7 +1,9 @@
 {
-    "name": "SG.InspectorAttributes",
-    "rootNamespace": "SG",
-    "references": [],
+    "name": "TTG.EditorAttributes.Editor",
+    "rootNamespace": "TTG",
+    "references": [
+        "GUID:1a14f13fa2e459e4fa1f1ad92b0861f8"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

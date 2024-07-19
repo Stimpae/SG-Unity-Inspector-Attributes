@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Diagnostics;
 using UnityEngine;
 
-namespace SG.SG_Inspector_Attributes.Runtime.GroupAttributes {
-    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
-    public class FoldoutGroupAttribute : PropertyAttribute {
-        public string groupName;
+namespace TTG.TTG_Editor_Attributes.Runtime.GroupAttributes {
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    [Conditional("UNITY_EDITOR")]
+    public class FoldoutGroupAttribute : Attribute {
+        public string GroupName { get; private set; }
         public FoldoutGroupAttribute(string groupName) {
-            this.groupName = groupName;
+            this.GroupName = groupName;
         }
     }
 }

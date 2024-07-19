@@ -1,7 +1,7 @@
 {
-  "name": "com.stimpae.sginspectorattributes",
+  "name": "com.stimpae.sgeditorattributes",
   "version": "1.0.0",
-  "displayName": "SG Inspector Attributes",
+  "displayName": "TTG Editor Attributes",
   "description": "A collection of custom inspector attributes for Unity.",
   "unity": "2022.1",
   "author": {

@@ -1,6 +1,10 @@
+using System;
+using System.Diagnostics;
 using UnityEngine;
 
-namespace SG.SG_Inspector_Attributes.Runtime.DecoratorAttributes {
+namespace TTG.TTG_Editor_Attributes.Runtime.MiscAttributes {
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    [Conditional("UNITY_EDITOR")]
     public class SplitterAttribute : PropertyAttribute {
         public readonly int thickness;
         public readonly int padding;
