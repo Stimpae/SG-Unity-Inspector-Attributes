@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace SG.SG_Inspector_Attributes.Runtime.EssentialAttributes {
+namespace TTG.Attributes {
     public enum TitleAlignment {
         LEFT,
         CENTER,

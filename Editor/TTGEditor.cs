@@ -3,15 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using SG;
-using TTG.TTG_Editor_Attributes.Editor.Utilities;
-using TTG.TTG_Editor_Attributes.Runtime.ButtonAttributes;
-using TTG.TTG_Editor_Attributes.Runtime.GroupAttributes;
+using TTG.Attributes;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 
-namespace TTG.TTG_Editor_Attributes.Editor {
+namespace TTG.Attributes {
     // ReSharper disable once InconsistentNaming
     [CustomEditor(typeof(MonoBehaviour), true)]
     public class TTGEditor : UnityEditor.Editor {
@@ -23,21 +20,25 @@ namespace TTG.TTG_Editor_Attributes.Editor {
         private IEnumerable<SerializedProperty> m_noneGroupedProperties;
         private IEnumerable<MethodInfo> m_buttonMethods;
 
-        private Dictionary<string, bool> m_foldoutStates = new Dictionary<string, bool>();
-
+        private Dictionary<string, EditorBool> m_foldoutStates = new Dictionary<string, EditorBool>();
+        
         private void OnEnable() {
             m_serializedProperties.Clear();
-            m_serializedProperties = SerializedPropertyUtility.GetSerializedProperties(serializedObject);
+            m_serializedProperties = PropertyUtility.GetSerializedProperties(serializedObject);
        
             m_foldoutGroupedProperties = m_serializedProperties
-                .Where(p => SerializedPropertyUtility.GetAttribute<FoldoutGroupAttribute>(p) != null)
-                .GroupBy(p => SerializedPropertyUtility.GetAttribute<FoldoutGroupAttribute>(p).GroupName);
+                .Where(p => AttributeUtility.GetAttribute<FoldoutGroupAttribute>(p) != null)
+                .GroupBy(p => AttributeUtility.GetAttribute<FoldoutGroupAttribute>(p).GroupName);
             
-            m_noneGroupedProperties = m_serializedProperties
-                .Where(p => SerializedPropertyUtility.GetAttribute<FoldoutGroupAttribute>(p) == null &&
-                            SerializedPropertyUtility.GetAttribute<BoxGroupAttribute>(p) == null);
+            m_boxGroupedProperties = m_serializedProperties
+                .Where(p => AttributeUtility.GetAttribute<BoxGroupAttribute>(p) != null)
+                .GroupBy(p => AttributeUtility.GetAttribute<BoxGroupAttribute>(p).GroupName);
 
-            m_buttonMethods = SerializedPropertyUtility.GetMethods(target, methodInfo
+            m_noneGroupedProperties = m_serializedProperties
+                .Where(p => AttributeUtility.GetAttribute<FoldoutGroupAttribute>(p) == null &&
+                            AttributeUtility.GetAttribute<BoxGroupAttribute>(p) == null);
+
+            m_buttonMethods = ReflectionUtility.GetMethods(target, methodInfo
                 => methodInfo.GetCustomAttributes(typeof(ButtonAttribute), true).Length > 0);
         }
         
@@ -48,54 +49,89 @@ namespace TTG.TTG_Editor_Attributes.Editor {
         }
 
         private void DrawProperties() {
-
+            // todo Draw validated property errors if there are any
+            
             foreach (var property in m_noneGroupedProperties) {
-                if (property.name.Equals("m_Script")) {
-                    GUI.enabled = false;
-                    EditorGUILayout.PropertyField(property);
-                    GUI.enabled = true;
-                    continue;
-                }
-
+                if (property.name == "m_Script") continue;
                 EditorGUILayout.PropertyField(property);
             }
-
-            foreach (var foldoutGroup in m_foldoutGroupedProperties) {
-                var groupKey = foldoutGroup.Key;
-
-                if (!m_foldoutStates.ContainsKey(groupKey)) {
-                    m_foldoutStates[groupKey] = false;
-                }
-
-                m_foldoutStates[groupKey] = EditorGUILayout.Foldout(m_foldoutStates[foldoutGroup.Key], groupKey);
-                if (!m_foldoutStates[foldoutGroup.Key]) continue;
-                foreach (var property in foldoutGroup) {
-                    EditorGUILayout.PropertyField(property, true);
-                }
-            }
-
+            GUILayout.Space(10);
+            
+            DrawBoxGroups();
+            DrawFoldoutGroups();
+            
+            // todo Draw tab groups
+            
+            GUILayout.Space(10);
+            
+            DrawButtons();
+        }
+        
+        private void DrawButtons() {
             foreach (var method in m_buttonMethods) {
-                var buttonAttribute = (ButtonAttribute)method.GetCustomAttribute(typeof(ButtonAttribute));
-                var buttonText = string.IsNullOrEmpty(buttonAttribute.buttonText)
-                    ? ObjectNames.NicifyVariableName(method.Name)
-                    : buttonAttribute.buttonText;
-
-                if (!GUILayout.Button(buttonText)) continue;
-
-                var defaultParams = method.GetParameters().Select(p => p.DefaultValue).ToArray();
-                var methodResult = method.Invoke(target, defaultParams) as IEnumerator;
-
-                if (Application.isPlaying) {
-                    if (methodResult != null && target is MonoBehaviour behaviour) {
-                        behaviour.StartCoroutine(methodResult);
-                    }
-
-                    continue;
+                if (!GUILayout.Button(ObjectNames.NicifyVariableName(method.Name))) continue;
+                method.Invoke(target, method.GetParameters().Select(p => p.DefaultValue).ToArray());
+                EditorUtility.SetDirty(target);
+                EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+            }
+        }
+        
+        private void DrawBoxGroups() {
+            foreach (var properties in m_boxGroupedProperties) {
+                var groupName = properties.Key;
+                
+                EditorGUILayout.BeginVertical(AttributeEditorStyles.ContainerStyle(new RectOffset(5, 7, 0, 0), true));
+                Rect verticalGroup = EditorGUILayout.BeginVertical();
+            
+                var serializedProperties = properties.ToList();
+            
+                var boxGroupAttribute = AttributeUtility.GetAttribute<BoxGroupAttribute>(serializedProperties.First());
+                var color = AttributeEditorStyles.GetColor(boxGroupAttribute.ColorIndex);
+                AttributeEditorStyles.DrawIdentifierLine(verticalGroup, color);
+            
+                EditorGUILayout.LabelField(groupName, AttributeEditorStyles.HeaderStyle(true, 12, new RectOffset(-2, 0, 0, 0)));
+                
+                foreach (var property in serializedProperties) {
+                    EditorGUILayout.BeginVertical(AttributeEditorStyles.ContainerChildStyle(new RectOffset(0, 0, 0, 0), new RectOffset(0,0, 3, 0)));
+                    EditorGUILayout.PropertyField(property, true);
+                    EditorGUILayout.EndVertical();
+                    if (serializedProperties.Last() == property) GUILayout.Space(5);
+                }
+                
+                EditorGUILayout.EndVertical();
+                EditorGUILayout.EndVertical();
+            }
+        }
+        
+        private void DrawFoldoutGroups() {
+            foreach (var properties in m_foldoutGroupedProperties) {
+                var groupName = properties.Key;
+                
+                if (!m_foldoutStates.ContainsKey(groupName)) {
+                    m_foldoutStates[groupName] = new EditorBool($"{target.GetInstanceID()}.{properties.Key}", false);
                 }
 
-                EditorUtility.SetDirty(target);
-                var stage = PrefabStageUtility.GetCurrentPrefabStage();
-                EditorSceneManager.MarkSceneDirty(stage?.scene ?? EditorSceneManager.GetActiveScene());
+                EditorGUILayout.BeginVertical(AttributeEditorStyles.ContainerStyle(new RectOffset(15, 7, 0, 0)));
+                Rect verticalGroup = EditorGUILayout.BeginVertical();
+            
+                var serializedProperties = properties.ToList();
+            
+                var foldoutGroupAttribute = AttributeUtility.GetAttribute<FoldoutGroupAttribute>(serializedProperties.First());
+                var color = AttributeEditorStyles.GetColor(foldoutGroupAttribute.ColorIndex);
+                AttributeEditorStyles.DrawIdentifierLine(verticalGroup, color);
+            
+                m_foldoutStates[groupName].Value = EditorGUILayout.Foldout(m_foldoutStates[groupName].Value, groupName, AttributeEditorStyles.FoldoutStyle(true, 12));
+                if (m_foldoutStates[groupName].Value) {
+                    foreach (var property in serializedProperties) {
+                        EditorGUILayout.BeginVertical(AttributeEditorStyles.ContainerChildStyle(new RectOffset(0, 0, 0, 0), new RectOffset(0,0, 3, 0), true));
+                        EditorGUILayout.PropertyField(property, true);
+                        EditorGUILayout.EndVertical();
+                        if (serializedProperties.Last() == property) GUILayout.Space(5);
+                    }
+                }
+                
+                EditorGUILayout.EndVertical();
+                EditorGUILayout.EndVertical();
             }
         }
     }

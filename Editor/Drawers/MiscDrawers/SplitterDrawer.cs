@@ -1,8 +1,7 @@
-using TTG.TTG_Editor_Attributes.Runtime.MiscAttributes;
 using UnityEditor;
 using UnityEngine;
 
-namespace TTG.TTG_Editor_Attributes.Editor.MiscAttributes {
+namespace TTG.Attributes {
     [CustomPropertyDrawer(typeof(SplitterAttribute))]
     public class SplitterDrawer : DecoratorDrawer {
         public override void OnGUI(Rect position) {

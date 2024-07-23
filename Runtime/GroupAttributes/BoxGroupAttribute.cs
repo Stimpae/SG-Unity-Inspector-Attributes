@@ -1,22 +1,17 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 
-namespace SG
-{
-    public class BoxGroupAttribute : Attribute
-    {
-        // Start is called before the first frame update
-        void Start()
-        {
-        
-        }
+namespace TTG.Attributes {
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    [Conditional("UNITY_EDITOR")]
+    public class BoxGroupAttribute : Attribute {
+        public string GroupName { get; private set; }
+        public int ColorIndex { get; private set; }
 
-        // Update is called once per frame
-        void Update()
-        {
-        
+        public BoxGroupAttribute(string groupName, int colorIndex = 1) {
+            this.GroupName = groupName;
+            this.ColorIndex = colorIndex;
         }
     }
 }

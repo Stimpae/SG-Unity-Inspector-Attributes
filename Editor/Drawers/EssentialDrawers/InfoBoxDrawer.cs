@@ -1,8 +1,7 @@
-using SG.SG_Inspector_Attributes.Runtime.MiscAttributes;
 using UnityEditor;
 using UnityEngine;
 
-namespace TTG.TTG_Editor_Attributes.Editor.EssentialAttributes {
+namespace TTG.Attributes {
     [CustomPropertyDrawer(typeof(InfoBoxAttribute))]
     public class InfoBoxDrawer : DecoratorDrawer {
         public override void OnGUI(Rect position) {
@@ -29,14 +28,14 @@ namespace TTG.TTG_Editor_Attributes.Editor.EssentialAttributes {
             return 45f; // hmm
         }
 
-        private Texture2D GetMessageTypeIcon(InfoMessageType type) {
+        private Texture2D GetMessageTypeIcon(EInfoMessageType type) {
             switch (type) {
-                case InfoMessageType.WARNING:
+                case EInfoMessageType.WARNING:
                     return EditorGUIUtility.IconContent("console.warnicon").image as Texture2D;
-                case InfoMessageType.ERROR:
+                case EInfoMessageType.ERROR:
                     return EditorGUIUtility.IconContent("console.erroricon").image as Texture2D;
-                case InfoMessageType.INFO:
-                case InfoMessageType.NONE:
+                case EInfoMessageType.INFO:
+                case EInfoMessageType.NONE:
                 default:
                     return EditorGUIUtility.IconContent("console.infoicon").image as Texture2D;
             }

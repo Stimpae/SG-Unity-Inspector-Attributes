@@ -1,8 +1,7 @@
-﻿using TTG.TTG_Editor_Attributes.Runtime.ButtonAttributes;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
-namespace TTG.TTG_Editor_Attributes.Editor.ButtonDrawers {
+namespace TTG.Attributes {
     [CustomPropertyDrawer(typeof(ButtonFieldAttribute))]
     public class ButtonFieldDrawer : PropertyDrawer{
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {

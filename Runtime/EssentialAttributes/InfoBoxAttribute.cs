@@ -1,18 +1,22 @@
+using System;
+using System.Diagnostics;
 using UnityEngine;
 
-namespace SG.SG_Inspector_Attributes.Runtime.MiscAttributes {
-    public enum InfoMessageType {
+namespace TTG.Attributes {
+    public enum EInfoMessageType {
         NONE,
         INFO,
         WARNING,
         ERROR
     }
     
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
+    [Conditional("UNITY_EDITOR")]
     public class InfoBoxAttribute : PropertyAttribute {
         public readonly string text;
-        public readonly InfoMessageType messageType;
+        public readonly EInfoMessageType messageType;
 
-        public InfoBoxAttribute(string text, InfoMessageType messageType = InfoMessageType.INFO) {
+        public InfoBoxAttribute(string text, EInfoMessageType messageType = EInfoMessageType.INFO) {
             this.text = text;
             this.messageType = messageType;
         }

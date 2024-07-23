@@ -2,7 +2,7 @@ using System;
 using System.Diagnostics;
 using UnityEngine;
 
-namespace TTG.TTG_Editor_Attributes.Runtime.MiscAttributes {
+namespace TTG.Attributes {
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
     [Conditional("UNITY_EDITOR")]
     public class SplitterAttribute : PropertyAttribute {
