@@ -21,15 +21,15 @@ namespace TTG.Attributes.Examples {
         public string exampleString;
         public bool exampleBool;
         
-        // todo - need some type of nesting for structs and classes? unsure how to do this yet public ExampleStruct exampleStruct;
+        //[Struct] public ExampleStruct exampleStruct;
+        [ScriptableObject] public ExampleScriptable exampleScriptable;
         
         // validator
         // list view
         // min max slider
         // inline button
-        // expandable
+        // reorderable list
         
-
         [Splitter(1, 20)]
         [Title("Example Title", "Example Subtitle", TitleAlignment.LEFT, true, true)]
         [Holder] public DecoratorHolder decoratorHolder;

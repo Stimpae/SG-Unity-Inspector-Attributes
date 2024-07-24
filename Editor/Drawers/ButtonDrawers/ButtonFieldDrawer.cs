@@ -16,7 +16,6 @@ namespace TTG.Attributes {
             if (property.propertyType == SerializedPropertyType.Generic) return;
             position.y += buttonFieldAttribute.buttonHeight + 5;
             EditorGUI.PropertyField(position, property, label);
-
         }
         
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label) {

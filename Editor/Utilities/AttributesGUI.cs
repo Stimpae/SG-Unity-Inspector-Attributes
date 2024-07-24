@@ -10,6 +10,10 @@ namespace TTG.Attributes {
             DrawPropertyField(property, includeChildren, drawContainer);
         }
         
+        public static void DrawerPropertyField(Rect rect, SerializedProperty property, bool includeChildren = true, bool drawContainer = false) {
+            DrawDrawerPropertyField(rect, property, includeChildren, drawContainer);
+        }
+        
         private static void DrawPropertyField(SerializedProperty property, bool includeChildren, bool drawContainer) {
             if (!AttributeUtility.IsVisible(property)) return;
             
@@ -21,6 +25,17 @@ namespace TTG.Attributes {
                 EditorGUILayout.PropertyField(property, AttributeUtility.GetLabel(property), includeChildren);
             }
             if(drawContainer) EditorGUILayout.EndVertical();
+        }
+        
+        private static void DrawDrawerPropertyField(Rect rect, SerializedProperty property, bool includeChildren, bool drawContainer) {
+            if (!AttributeUtility.IsVisible(property)) return;
+            
+            // TODO - if our validation check fails we need to draw a warning box at the top of the inspector
+            // TODO - we also need to change how the property field is drawn to show the error?
+            
+            using (new EditorGUI.DisabledScope(!AttributeUtility.IsEnabled(property))) {
+                EditorGUI.PropertyField(rect, property, AttributeUtility.GetLabel(property), includeChildren);
+            }
         }
     }
 }

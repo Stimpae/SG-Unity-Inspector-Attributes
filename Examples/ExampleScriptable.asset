@@ -12,5 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 240c9c79801f4a6aa213618543b0747b, type: 3}
   m_Name: ExampleScriptable
   m_EditorClassIdentifier: 
-  exampleInt: 0
-  exampleFloat1: 0
+  readOnlyInt: 141234
+  exampleLabelString: 
+  emptyLabelString: 
+  exampleFloat: 1234
+  exampleString: hello this is a string
+  exampleBool: 0
+  exampleIntFoldout: 0
+  exampleFloat1Foldout: 0
+  exampleIntFoldout1: 0
+  exampleFloat1Foldout1: 0
+  exampleIntFoldout2: 0
+  exampleFloat1Foldout2: 0

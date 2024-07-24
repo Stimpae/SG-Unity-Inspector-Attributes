@@ -20,6 +20,9 @@ namespace TTG.Attributes{
         public static FieldInfo GetField(object target, string fieldName) {
             return target.GetType().GetField(fieldName, BindingFlags.Public | BindingFlags.Instance);
         }
+        public static FieldInfo[] GetFields(object target) {
+            return target.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance).ToArray();
+        }
         
         public static MethodInfo GetMethod(object target, string methodName) {
             return target.GetType().GetMethod(methodName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Static);

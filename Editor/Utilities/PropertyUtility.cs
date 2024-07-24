@@ -16,5 +16,11 @@ namespace TTG.Attributes {
             } while (iterator.NextVisible(false));
             return properties;
         }
+        
+        public static System.Type GetPropertyType(SerializedProperty property) {
+            var type = property.serializedObject.targetObject.GetType();
+            var field = type.GetField(property.propertyPath, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            return field.FieldType;
+        }
     }
 }

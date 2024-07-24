@@ -15,13 +15,13 @@ namespace TTG.Attributes {
     public class TTGEditor : UnityEditor.Editor {
         private List<SerializedProperty> m_serializedProperties = new List<SerializedProperty>();
         private IEnumerable<IGrouping<string, SerializedProperty>> m_boxGroupedProperties;
-        private IEnumerable<IGrouping<string, SerializedProperty>> m_foldoutGroupedProperties;
+        public IEnumerable<IGrouping<string, SerializedProperty>> m_foldoutGroupedProperties;
         private IEnumerable<IGrouping<string, SerializedProperty>> m_tabGroupedProperties;
         
         private IEnumerable<SerializedProperty> m_noneGroupedProperties;
         private IEnumerable<MethodInfo> m_buttonMethods;
 
-        private Dictionary<string, EditorBool> m_foldoutStates = new Dictionary<string, EditorBool>();
+        public Dictionary<string, EditorBool> m_foldoutStates = new Dictionary<string, EditorBool>();
         
         private void OnEnable() {
             m_serializedProperties.Clear();
@@ -79,7 +79,6 @@ namespace TTG.Attributes {
         private void DrawBoxGroups() {
             foreach (var properties in m_boxGroupedProperties) {
                 var groupName = properties.Key;
-                
                 
                 EditorGUILayout.BeginVertical(AttributeEditorStyles.ContainerStyle(new RectOffset(5, 7, 0, 0), true));
                 Rect verticalGroup = EditorGUILayout.BeginVertical();
