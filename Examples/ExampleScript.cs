@@ -1,13 +1,19 @@
+using System;
 using System.ComponentModel;
 using UnityEngine;
 
 namespace TTG.Attributes.Examples {
+    [Serializable]
+    public struct ExampleStruct {
+        [ReadOnly] public string exampleString;
+        public int exampleInt;
+    }
+    
     public class ExampleScript : MonoBehaviour {
-        
-        [ReadOnly] public string exampleReadOnlyString;
+        [ReadOnly] public int readOnlyInt = 141234;
 
-        [Label("Example Label", true)] public string exampleLabelString;
-        [Label()] public string exampleLabelString2;
+        [Label("Example Label Of Fury", true)] public string exampleLabelString;
+        [Label()] public string emptyLabelString;
 
         [InfoBox("Example information box, this is some information about this example script. we are using this to show off how things are done", EInfoMessageType.WARNING)]
         [Title("Example Title", "Example Subtitle", TitleAlignment.LEFT, true, true)]
@@ -15,6 +21,15 @@ namespace TTG.Attributes.Examples {
         public string exampleString;
         public bool exampleBool;
         
+        // todo - need some type of nesting for structs and classes? unsure how to do this yet public ExampleStruct exampleStruct;
+        
+        // validator
+        // list view
+        // min max slider
+        // inline button
+        // expandable
+        
+
         [Splitter(1, 20)]
         [Title("Example Title", "Example Subtitle", TitleAlignment.LEFT, true, true)]
         [Holder] public DecoratorHolder decoratorHolder;
@@ -25,15 +40,17 @@ namespace TTG.Attributes.Examples {
         [InfoBox("Groups and buttons will always be displayed at the button of the inspector due to the way it is constructed in the editor.", EInfoMessageType.NONE)]
         [Holder] public DecoratorHolder infoBox;
         
-        [FoldoutGroup("Example Foldout Group",3)] public int exampleInt;
-        [FoldoutGroup("Example Foldout Group",3)] public float exampleFloat1;
+        [FoldoutGroup("Example Foldout Group",5)] public int exampleInt;
+        [FoldoutGroup("Example Foldout Group")] public float exampleFloat1;
         
-        [FoldoutGroup("Example Foldout Group 2", 1)] public string exampleString2;
-        [FoldoutGroup("Example Foldout Group 2",1)] public bool exampleBool3;
+        [FoldoutGroup("Example Foldout Group 2", 4)] public string exampleString2;
+        [FoldoutGroup("Example Foldout Group 2")] public bool exampleBool3;
         
         [BoxGroup("Example Box Group", 2)] public string exampleString4;
-        [BoxGroup("Example Box Group", 2)] public bool exampleBool5;
-        
+        [BoxGroup("Example Box Group")] public bool exampleBool5;
+        [BoxGroup("Example Box Group"), EnabledIf("exampleBool5")] public float ExampleEnableIf;
+        [BoxGroup("Example Box Group"), ShowIf("exampleBool5")] public int exampleShowIf;
+
         [Button("Example Button")]
         public void ExampleMethod() {
             Debug.Log("Example Method Called");

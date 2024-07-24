@@ -7,10 +7,11 @@ using TTG.Attributes;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using Object = System.Object;
 
 namespace TTG.Attributes {
     // ReSharper disable once InconsistentNaming
-    [CustomEditor(typeof(MonoBehaviour), true)]
+    [CustomEditor(typeof(Object), true)]
     public class TTGEditor : UnityEditor.Editor {
         private List<SerializedProperty> m_serializedProperties = new List<SerializedProperty>();
         private IEnumerable<IGrouping<string, SerializedProperty>> m_boxGroupedProperties;
@@ -53,14 +54,13 @@ namespace TTG.Attributes {
             
             foreach (var property in m_noneGroupedProperties) {
                 if (property.name == "m_Script") continue;
-                EditorGUILayout.PropertyField(property);
+                AttributesGUI.PropertyField(property,true);
             }
             GUILayout.Space(10);
             
             DrawBoxGroups();
             DrawFoldoutGroups();
-            
-            // todo Draw tab groups
+            // todo - Draw tab groups
             
             GUILayout.Space(10);
             
@@ -80,9 +80,9 @@ namespace TTG.Attributes {
             foreach (var properties in m_boxGroupedProperties) {
                 var groupName = properties.Key;
                 
+                
                 EditorGUILayout.BeginVertical(AttributeEditorStyles.ContainerStyle(new RectOffset(5, 7, 0, 0), true));
                 Rect verticalGroup = EditorGUILayout.BeginVertical();
-            
                 var serializedProperties = properties.ToList();
             
                 var boxGroupAttribute = AttributeUtility.GetAttribute<BoxGroupAttribute>(serializedProperties.First());
@@ -92,9 +92,7 @@ namespace TTG.Attributes {
                 EditorGUILayout.LabelField(groupName, AttributeEditorStyles.HeaderStyle(true, 12, new RectOffset(-2, 0, 0, 0)));
                 
                 foreach (var property in serializedProperties) {
-                    EditorGUILayout.BeginVertical(AttributeEditorStyles.ContainerChildStyle(new RectOffset(0, 0, 0, 0), new RectOffset(0,0, 3, 0)));
-                    EditorGUILayout.PropertyField(property, true);
-                    EditorGUILayout.EndVertical();
+                    AttributesGUI.PropertyField(property,true, true);
                     if (serializedProperties.Last() == property) GUILayout.Space(5);
                 }
                 
@@ -113,7 +111,7 @@ namespace TTG.Attributes {
 
                 EditorGUILayout.BeginVertical(AttributeEditorStyles.ContainerStyle(new RectOffset(15, 7, 0, 0)));
                 Rect verticalGroup = EditorGUILayout.BeginVertical();
-            
+
                 var serializedProperties = properties.ToList();
             
                 var foldoutGroupAttribute = AttributeUtility.GetAttribute<FoldoutGroupAttribute>(serializedProperties.First());
@@ -123,9 +121,7 @@ namespace TTG.Attributes {
                 m_foldoutStates[groupName].Value = EditorGUILayout.Foldout(m_foldoutStates[groupName].Value, groupName, AttributeEditorStyles.FoldoutStyle(true, 12));
                 if (m_foldoutStates[groupName].Value) {
                     foreach (var property in serializedProperties) {
-                        EditorGUILayout.BeginVertical(AttributeEditorStyles.ContainerChildStyle(new RectOffset(0, 0, 0, 0), new RectOffset(0,0, 3, 0), true));
-                        EditorGUILayout.PropertyField(property, true);
-                        EditorGUILayout.EndVertical();
+                        AttributesGUI.PropertyField(property,true, true);
                         if (serializedProperties.Last() == property) GUILayout.Space(5);
                     }
                 }

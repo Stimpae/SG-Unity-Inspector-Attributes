@@ -59,11 +59,25 @@ namespace TTG.Attributes {
             
             EditorGUI.DrawRect(identifierRect, targetColor);
         }
+        
+        public static void CreateColouredTexture(this Texture2D texture2D, Color32 color) {
+            var colorArray = texture2D.GetPixels32();
+            for (var i = 0; i < colorArray.Length; ++i) {
+                colorArray[i] = color;
+            }
             
-        public static void DrawVerticalLayout(Action action, GUIStyle style) {
-            EditorGUILayout.BeginVertical(style);
-            action();
-            EditorGUILayout.EndVertical();
+            texture2D.SetPixels32(colorArray);
+            texture2D.Apply();
+        }
+        
+        public static void DrawSplitter(float xMin= 0f) {
+            var splitterRect = GUILayoutUtility.GetRect(1f, 1f);
+            splitterRect.xMin = xMin;
+            splitterRect.width += 4f;
+            if (Event.current.type != EventType.Repaint) {
+                return;
+            }
+            EditorGUI.DrawRect(splitterRect, new Color(0.12f, 0.12f, 0.12f, 1.333f));
         }
         
         public static Color GetColor(int index) {

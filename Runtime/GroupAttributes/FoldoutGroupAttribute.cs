@@ -9,7 +9,7 @@ namespace TTG.Attributes {
         public string GroupName { get; private set; }
         public int ColorIndex { get; private set; }
         
-        public FoldoutGroupAttribute(string groupName, int colorIndex) {
+        public FoldoutGroupAttribute(string groupName, int colorIndex = 1) {
             this.GroupName = groupName;
             this.ColorIndex = colorIndex;
         }

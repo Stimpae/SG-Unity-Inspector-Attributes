@@ -13,6 +13,10 @@ namespace TTG.Attributes{
             return index < 0 ? value : (value as IEnumerable)?.Cast<object>().ElementAtOrDefault(index);
         }
         
+        public static PropertyInfo GetProperty(object target, string propertyName) {
+            return target.GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance);
+        }
+        
         public static FieldInfo GetField(object target, string fieldName) {
             return target.GetType().GetField(fieldName, BindingFlags.Public | BindingFlags.Instance);
         }
