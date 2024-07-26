@@ -24,10 +24,16 @@ namespace TTG.Attributes.Examples {
         //[Struct] public ExampleStruct exampleStruct;
         [ScriptableObject] public ExampleScriptable exampleScriptable;
         
+        [InlineButton("Inline Button", "ExampleMethod")] public int exampleInline;
+        
+        [Required("This field is required")] public GameObject requiredField; 
+        [Validation("EvaluateRequiresSetup", "This field requires setup", true)] public Animator animator;
+        public bool ValidateAnimator() { return ( animator == null); }
+        
+        
         // validator
         // list view
         // min max slider
-        // inline button
         // reorderable list
         
         [Splitter(1, 20)]

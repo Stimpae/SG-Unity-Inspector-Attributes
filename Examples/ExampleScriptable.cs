@@ -3,10 +3,6 @@
 namespace TTG.Attributes.Examples {
     [CreateAssetMenu(fileName = "ExampleScriptable", menuName = "TTG/Attributes/Examples/ExampleScriptable")]
     public class ExampleScriptable : ScriptableObject {
-        
-        [Title("Example Title", "Example Description", showLine: true, bold: true)]
-        [Holder] public DecoratorHolder decoratorHolder;
-        
         [ReadOnly] public int readOnlyInt = 141234;
 
         [Label("Example Label Of Fury", true)] public string exampleLabelString;
@@ -29,13 +25,13 @@ namespace TTG.Attributes.Examples {
             Debug.Log("Example Method Called");
         }
         
-        [FoldoutGroup("Example Foldout Group",5)] public int exampleIntFoldout;
-        [FoldoutGroup("Example Foldout Group")] public float exampleFloat1Foldout;
+        //[FoldoutGroup("Example Foldout Group",5)] public int exampleIntFoldout;
+        //[FoldoutGroup("Example Foldout Group")] public float exampleFloat1Foldout;
         
-        [FoldoutGroup("Example Foldout Group 1",5)] public int exampleIntFoldout1; 
-        [FoldoutGroup("Example Foldout Group 1")] public float exampleFloat1Foldout1;
+        //[FoldoutGroup("Example Foldout Group 1",5)] public int exampleIntFoldout1; 
+        //[FoldoutGroup("Example Foldout Group 1")] public float exampleFloat1Foldout1;
         
-        [FoldoutGroup("Example Foldout Group 2",5)] public int exampleIntFoldout2;
-        [FoldoutGroup("Example Foldout Group 2")] public float exampleFloat1Foldout2;
+        //[FoldoutGroup("Example Foldout Group 2",5)] public int exampleIntFoldout2;
+        //[FoldoutGroup("Example Foldout Group 2")] public float exampleFloat1Foldout2;
     }
 }

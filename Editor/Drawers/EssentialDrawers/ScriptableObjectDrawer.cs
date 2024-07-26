@@ -33,9 +33,9 @@ namespace TTG.Attributes {
                 if (!m_expanded) return;
                 var boxRect = new Rect() {
                     x = 0,
-                    y = position.y + EditorGUIUtility.singleLineHeight + 3f,
+                    y = position.y + EditorGUIUtility.singleLineHeight,
                     width = (position.width * 2),
-                    height = (position.height) + GetInspectorHeight(property) + 5
+                    height = (position.height) + GetInspectorHeight(property)
                 };
 
                 EditorGUI.DrawRect(boxRect, new Color(0.18f, 0.18f, 0.18f, 1.0f));
@@ -48,8 +48,8 @@ namespace TTG.Attributes {
 
         private float GetInspectorHeight(SerializedProperty property) {
             float height = 0;
+            
             var foldoutList = new List<string>();
-            // get the serialized object reference from the property
             var serializedObject = new SerializedObject(property.objectReferenceValue);
             var list = PropertyUtility.GetSerializedProperties(serializedObject);
             foreach (var prop in list) {
@@ -57,24 +57,17 @@ namespace TTG.Attributes {
                 var foldoutGroupAttribute = AttributeUtility.GetAttribute<FoldoutGroupAttribute>(prop);
                 if (foldoutGroupAttribute != null) {
                     var foldoutGroupName = foldoutGroupAttribute.GroupName;
-                    if (!foldoutList.Contains(foldoutGroupName)) {
-                        foldoutList.Add(foldoutGroupName);
-                        height += EditorGUI.GetPropertyHeight(prop, true) + 5f;
-                        if (m_editor != null && m_editor is TTGEditor editor) {
-                            if (editor != null && editor.m_foldoutStates.ContainsKey(foldoutGroupName) &&
-                                editor.m_foldoutStates[foldoutGroupName].Value) {
-                                // get the properties in the foldout group
-                                var foldoutGroupProperties = list.Where(p =>
-                                    AttributeUtility.GetAttribute<FoldoutGroupAttribute>(p) != null &&
-                                    AttributeUtility.GetAttribute<FoldoutGroupAttribute>(p).GroupName ==
-                                    foldoutGroupName);
-                                
-                                foreach (var props in foldoutGroupProperties) {
-                                    height += EditorGUI.GetPropertyHeight(props, true) + 10f;
-                                }
-                            }
-                        }
-                    }
+                    if (foldoutList.Contains(foldoutGroupName)) continue;
+                    foldoutList.Add(foldoutGroupName);
+                    height += EditorGUI.GetPropertyHeight(prop, true) + 5f;
+                    if (m_editor == null || m_editor is not TTGEditor editor) continue;
+                    if (editor == null || !editor.FoldoutStates.ContainsKey(foldoutGroupName) || !editor.FoldoutStates[foldoutGroupName].Value) continue;
+                    var foldoutGroupProperties = list.Where(p =>
+                        AttributeUtility.GetAttribute<FoldoutGroupAttribute>(p) != null &&
+                        AttributeUtility.GetAttribute<FoldoutGroupAttribute>(p).GroupName ==
+                        foldoutGroupName);
+
+                    height += foldoutGroupProperties.Sum(props => EditorGUI.GetPropertyHeight(props, true) + 10f);
                 }
                 else {
                     height += EditorGUI.GetPropertyHeight(prop, true);
@@ -89,7 +82,7 @@ namespace TTG.Attributes {
             if (scriptableObject == null) {
                 return;
             }
-
+            
             m_editor = Editor.CreateEditor(scriptableObject);
             m_editor.OnInspectorGUI();
             m_editor.serializedObject.ApplyModifiedProperties();
