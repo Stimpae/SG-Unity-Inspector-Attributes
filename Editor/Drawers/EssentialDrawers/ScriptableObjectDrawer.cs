@@ -74,7 +74,7 @@ namespace TTG.Attributes {
                 }
             }
 
-            return height + 5f;
+            return height + 20f;
         }
         
         private void DrawScriptableInspector(SerializedProperty property) {

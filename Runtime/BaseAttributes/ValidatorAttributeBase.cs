@@ -4,6 +4,7 @@ using UnityEditor;
 
 namespace TTG.Attributes {
     [System.AttributeUsage(System.AttributeTargets.Field)]
-    public abstract class ValidateAttributeBase : Attribute {
+    public class ValidateAttributeBase : Attribute {
+        public string ErrorMessage { get; protected set; }
     }
 }

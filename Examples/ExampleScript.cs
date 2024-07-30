@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using UnityEngine;
 
@@ -26,16 +27,14 @@ namespace TTG.Attributes.Examples {
         
         [InlineButton("Inline Button", "ExampleMethod")] public int exampleInline;
         
-        [Required("This field is required")] public GameObject requiredField; 
-        [Validation("EvaluateRequiresSetup", "This field requires setup", true)] public Animator animator;
+        [Required("This field is required",true)] public GameObject requiredField; 
+        [Validation("ValidateAnimator", "This field requires setup", true)] public Animator animator;
         public bool ValidateAnimator() { return ( animator == null); }
         
-        
-        // validator
         // list view
+        [ListView] public List<int> exampleList = new List<int> {1, 2, 3, 4, 5};
         // min max slider
-        // reorderable list
-        
+
         [Splitter(1, 20)]
         [Title("Example Title", "Example Subtitle", TitleAlignment.LEFT, true, true)]
         [Holder] public DecoratorHolder decoratorHolder;

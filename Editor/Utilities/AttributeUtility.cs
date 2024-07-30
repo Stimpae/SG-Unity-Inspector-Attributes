@@ -17,8 +17,9 @@ namespace TTG.Attributes {
         }
 
         public static object GetTargetObject(SerializedProperty property) {
-            var path = property.propertyPath.Replace(".Array.data[", "[");
-            return path.Split('.').SkipLast(1).Aggregate<string, object>(property.serializedObject.targetObject,
+            if (property == null) {Debug.LogError("Property is null"); return null;}
+            var path = property?.propertyPath.Replace(".Array.data[", "[");
+            return path?.Split('.').SkipLast(1).Aggregate<string, object>(property.serializedObject.targetObject,
                 (current, element) =>
                     element.Contains("[")
                         ? ReflectionUtility.GetValue(current, element[..element.IndexOf("[", StringComparison.Ordinal)],

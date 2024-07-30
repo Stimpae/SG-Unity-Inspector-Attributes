@@ -7,10 +7,12 @@ namespace TTG.Attributes {
     public class InlineButtonAttribute : PropertyAttribute {
         public string ButtonLabel { get; private set;}
         public string MethodName { get; private set; }
+        public int Color { get; }
 
-        public InlineButtonAttribute(string buttonLabel, string methodName) {
+        public InlineButtonAttribute(string buttonLabel, string methodName, int color = 0) {
             ButtonLabel = buttonLabel;
             MethodName = methodName;
+            Color = color;
         }
         
     }

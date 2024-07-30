@@ -3,7 +3,6 @@ using UnityEditor;
 using UnityEngine;
 
 namespace TTG.Attributes {
-    // ReSharper disable once InconsistentNaming
     public static class AttributeEditorStyles {
         public static GUIStyle ContainerStyle(RectOffset padding, bool dark = false) {
             var style = new GUIStyle(GUI.skin.box) { padding = padding };
@@ -60,6 +59,24 @@ namespace TTG.Attributes {
             EditorGUI.DrawRect(identifierRect, targetColor);
         }
         
+        public static void DrawColouredHelpBox(Action action, Color32 color) {
+            GUIStyle redWarningBoxStyle = GUI.skin.GetStyle("helpbox");
+            var savedBackground = redWarningBoxStyle.normal.background;
+            var savedTextColor = redWarningBoxStyle.normal.textColor;
+            
+            Texture2D redWarningBoxBackgroundTexture = new Texture2D(2, 2);
+            redWarningBoxBackgroundTexture.CreateColouredTexture(color);
+            redWarningBoxStyle.normal.background = redWarningBoxBackgroundTexture;
+            redWarningBoxStyle.normal.textColor = Color.black;
+            redWarningBoxStyle.fontSize = 11;
+            redWarningBoxStyle.padding = new RectOffset(8, 8, 8, 2);
+            
+            action?.Invoke();
+            
+            redWarningBoxStyle.normal.background = savedBackground;
+            redWarningBoxStyle.normal.textColor = savedTextColor;
+        }
+        
         public static void CreateColouredTexture(this Texture2D texture2D, Color32 color) {
             var colorArray = texture2D.GetPixels32();
             for (var i = 0; i < colorArray.Length; ++i) {
@@ -91,7 +108,8 @@ namespace TTG.Attributes {
                 6 => new Color32(255, 235, 205, 255),
                 7 => new Color32(255, 127, 80, 255),
                 8 => new Color32(139, 0, 139, 255),
-                9 => new Color32(218, 165, 32, 255),
+                9 => new Color32(218, 165, 32, 255), 
+                10 => new Color32(255, 100, 50, 255),
                 _ => new Color32(255, 255, 255, 255)
             };
         }

@@ -24,7 +24,9 @@ namespace TTG.Attributes {
         private readonly Dictionary<string, EditorBool> m_foldoutStates = new Dictionary<string, EditorBool>();
         public Dictionary<string, EditorBool> FoldoutStates => m_foldoutStates;
 
-        private void OnEnable() {
+        protected virtual void OnEnable() {
+            ValidationUtility.ClearFailedValidations();
+            
             m_serializedProperties.Clear();
             m_serializedProperties = PropertyUtility.GetSerializedProperties(serializedObject);
        
@@ -43,15 +45,27 @@ namespace TTG.Attributes {
             m_buttonMethods = ReflectionUtility.GetMethods(target, methodInfo
                 => methodInfo.GetCustomAttributes(typeof(ButtonAttribute), true).Length > 0);
         }
-        
+
+        protected virtual void OnDisable() {
+            ValidationUtility.ClearFailedValidations();
+        }
+
         public override void OnInspectorGUI() {
             serializedObject.Update();
             DrawProperties();
             serializedObject.ApplyModifiedProperties();
         }
 
-        private void DrawProperties() {
-            // todo Draw validated property errors if there are any
+        protected virtual void DrawProperties() {
+            foreach (var property in m_serializedProperties) {
+                if(property == null) continue;
+                var key = property.name + "-" + serializedObject.targetObject.GetInstanceID();
+                var failedProperty = ValidationUtility.GetFailedValidation(key);
+                if(failedProperty == null) continue;
+                AttributesGUI.DrawValidatorErrorBox($"Property {failedProperty?.name} has failed validation");
+            }
+            
+            GUILayout.Space(10);
             
             foreach (var property in m_noneGroupedProperties) {
                 if (property.name == "m_Script") continue;
@@ -69,7 +83,7 @@ namespace TTG.Attributes {
             DrawButtons();
         }
         
-        private void DrawButtons() {
+        protected virtual void DrawButtons() {
             foreach (var method in m_buttonMethods) {
                 if (!GUILayout.Button(ObjectNames.NicifyVariableName(method.Name))) continue;
                 method.Invoke(target, method.GetParameters().Select(p => p.DefaultValue).ToArray());
@@ -78,7 +92,7 @@ namespace TTG.Attributes {
             }
         }
         
-        private void DrawBoxGroups() {
+        protected virtual void DrawBoxGroups() {
             foreach (var properties in m_boxGroupedProperties) {
                 var groupName = properties.Key;
                 
@@ -102,7 +116,7 @@ namespace TTG.Attributes {
             }
         }
         
-        private void DrawFoldoutGroups() {
+        protected virtual void DrawFoldoutGroups() {
             foreach (var properties in m_foldoutGroupedProperties) {
                 var groupName = properties.Key;
                 

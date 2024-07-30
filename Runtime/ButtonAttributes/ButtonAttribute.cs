@@ -6,10 +6,12 @@ namespace TTG.Attributes {
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
     [Conditional("UNITY_EDITOR")]
     public class ButtonAttribute : PropertyAttribute {
-        public readonly string buttonText;
+        public string ButtonText { get; }
+        public int Color { get; }
         
-        public ButtonAttribute(string buttonText = null) {
-            this.buttonText = buttonText;
+        public ButtonAttribute(string buttonText = null, int color = 0) {
+            Color = color;
+            this.ButtonText = buttonText;
         }
     }
 }
