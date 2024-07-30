@@ -22,6 +22,11 @@ namespace TTG.Attributes.Examples {
         public string exampleString;
         public bool exampleBool;
         
+        [BoxGroup("Example Box Group", 2)] public string exampleString4;
+        [BoxGroup("Example Box Group")] public bool exampleBool5;
+        [BoxGroup("Example Box Group"), EnabledIf("exampleBool5")] public float exampleEnableIf;
+        [BoxGroup("Example Box Group"), ShowIf("exampleBool5")] public int exampleShowIf;
+        
         //[Struct] public ExampleStruct exampleStruct;
         [ScriptableObject] public ExampleScriptable exampleScriptable;
         
@@ -31,10 +36,13 @@ namespace TTG.Attributes.Examples {
         [Validation("ValidateAnimator", "This field requires setup", true)] public Animator animator;
         public bool ValidateAnimator() { return ( animator == null); }
         
-        // list view
-        [ListView] public List<int> exampleList = new List<int> {1, 2, 3, 4, 5};
+        //[ListView] public List<int> exampleList = new List<int> {1, 2, 3, 4, 5};
         // min max slider
+        [MinMax(5, 10)] public Vector2 minMaxVector;
 
+        [FoldoutGroup("Example Foldout Group",5)] public int exampleInt;
+        [FoldoutGroup("Example Foldout Group")] public float exampleFloat1;
+        
         [Splitter(1, 20)]
         [Title("Example Title", "Example Subtitle", TitleAlignment.LEFT, true, true)]
         [Holder] public DecoratorHolder decoratorHolder;
@@ -45,17 +53,9 @@ namespace TTG.Attributes.Examples {
         [InfoBox("Groups and buttons will always be displayed at the button of the inspector due to the way it is constructed in the editor.", EInfoMessageType.NONE)]
         [Holder] public DecoratorHolder infoBox;
         
-        [FoldoutGroup("Example Foldout Group",5)] public int exampleInt;
-        [FoldoutGroup("Example Foldout Group")] public float exampleFloat1;
-        
         [FoldoutGroup("Example Foldout Group 2", 4)] public string exampleString2;
         [FoldoutGroup("Example Foldout Group 2")] public bool exampleBool3;
         
-        [BoxGroup("Example Box Group", 2)] public string exampleString4;
-        [BoxGroup("Example Box Group")] public bool exampleBool5;
-        [BoxGroup("Example Box Group"), EnabledIf("exampleBool5")] public float ExampleEnableIf;
-        [BoxGroup("Example Box Group"), ShowIf("exampleBool5")] public int exampleShowIf;
-
         [Button("Example Button")]
         public void ExampleMethod() {
             Debug.Log("Example Method Called");

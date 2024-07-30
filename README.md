@@ -8,41 +8,14 @@ A collection of useful Inspector Attributes for Unity.
 
 ## Example Usage
 
-### Header
-```csharp
-
-```
-
-### Separator
-```csharp
-
-```
-
-### ReadOnly
-```csharp
-
-```
-
-### MinMaxRange
-```csharp
-
-```
-
-### Foldout
-```csharp
-
-```
-
-### Button
-```csharp
-
-```
+// i will get round to writing documentations shortly, for the moment most of the attributes can be found in the example scripts in the folder examples.
 
 ## Why would i need this?
 
+To organise and improve inspectors workflows without the need to create custom editors.
+
 ## Notes
 
-p.s. This is a work in progress. I will be adding more attributes as I need them. Feel free to contribute. Also,
-if anyone has any suggestions or requests, feel free to open an issue.
+p.s. This is a work in progress. I will be adding more attributes as I need them within projects. this is being used in personal projects both open sourced and private,
+testing isn't fully complete if there are any issues please submit an issue on Github and i will respond as soon as possible.
 
-## How to Install
