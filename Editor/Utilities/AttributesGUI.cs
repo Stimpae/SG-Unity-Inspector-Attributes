@@ -25,15 +25,17 @@ namespace TTG.Attributes {
             if (drawContainer) EditorGUILayout.EndVertical();
         }
         
-        public static void DrawHelpBox(string message, MessageType messageType) {
-            EditorGUILayout.HelpBox(message, messageType);
+        public static void DrawHelpBox(string message, MessageType messageType, Color backgroundColor, Color textColor) {
+            AttributeEditorStyles.DrawColouredHelpBox(() => {
+                EditorGUILayout.HelpBox(message, messageType);
+            }, backgroundColor, textColor);
         }
 
         public static void DrawValidatorErrorBox(string errorMessage) {
             AttributeEditorStyles.DrawColouredHelpBox(() => {
                 EditorGUILayout.Space();
                 EditorGUILayout.HelpBox(errorMessage, MessageType.Warning);
-            }, AttributeEditorStyles.GetColor(10));
+            }, AttributeEditorStyles.GetColor(10), Color.black);
         }
     }
 }

@@ -15,9 +15,6 @@ namespace TTG.Attributes.Examples {
         [Title("Example Title", "Example Description", showLine: true, bold: true)]
         [Holder] public DecoratorHolder decoratorHolder1;
         
-        [InfoBox("Example information box, this is some information about this example script. we are using this to show off how things are done", EInfoMessageType.WARNING)]
-        [Holder] public DecoratorHolder decoratorHolder2;
-        
         [ButtonField("ExampleMethod", "Example Button Field", 30)]
         [Holder] public DecoratorHolder decoratorHolder3;
         

@@ -6,6 +6,7 @@ using System.Reflection;
 using TTG.Attributes;
 using UnityEditor;
 using UnityEditor.SceneManagement;
+using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Object = System.Object;
@@ -15,26 +16,47 @@ namespace TTG.Attributes {
     [CustomEditor(typeof(Object), true)]
     public class TTGEditor : UnityEditor.Editor {
         private List<SerializedProperty> m_serializedProperties = new List<SerializedProperty>();
+        private readonly Dictionary<SerializedProperty, ReorderableList> m_reorderableLists = new Dictionary<SerializedProperty, ReorderableList>();
         private readonly List<SerializedProperty> m_resolvedProperties = new List<SerializedProperty>();
-        
         private IEnumerable<MethodInfo> m_buttonMethods;
         private readonly Dictionary<string, EditorBool> m_foldoutStates = new Dictionary<string, EditorBool>();
+        
         public Dictionary<string, EditorBool> FoldoutStates => m_foldoutStates;
 
         protected virtual void OnEnable() {
             ValidationUtility.ClearFailedValidations();
-            
             m_serializedProperties.Clear();
             m_serializedProperties = PropertyUtility.GetSerializedProperties(serializedObject);
             
             m_buttonMethods = ReflectionUtility.GetMethods(target, methodInfo
                 => methodInfo.GetCustomAttributes(typeof(ButtonAttribute), true).Length > 0);
+            
+            InitializeReorderableLists();
         }
-
+        
         protected virtual void OnDisable() {
             ValidationUtility.ClearFailedValidations();
         }
+        
+        private void InitializeReorderableLists() {
+            foreach (var property in m_serializedProperties.Where(p => p.isArray && AttributeUtility.GetAttribute<ListViewAttribute>(p) != null)) {
+                m_reorderableLists.Add(property, CreateReorderableList(property));
+            }
+        }
 
+        private ReorderableList CreateReorderableList(SerializedProperty property) {
+            var reorderableList = new ReorderableList(serializedObject, property, true, false, true, true);
+            reorderableList.drawElementCallback = (rect, index, isActive, isFocused) => DrawElement(reorderableList, rect, index);
+            reorderableList.drawHeaderCallback = rect => EditorGUI.LabelField(rect, property.displayName);
+            return reorderableList;
+        }
+
+        private void DrawElement(ReorderableList reorderableList, Rect rect, int index) {
+            reorderableList.elementHeight = EditorGUI.GetPropertyHeight(reorderableList.serializedProperty.GetArrayElementAtIndex(index));
+            var element = reorderableList.serializedProperty.GetArrayElementAtIndex(index);
+            EditorGUI.PropertyField(new Rect(rect.x, rect.y, rect.width, rect.height), element, GUIContent.none);
+        }
+        
         public override void OnInspectorGUI() {
             serializedObject.Update();
             DrawProperties();
@@ -87,12 +109,24 @@ namespace TTG.Attributes {
                 return true;
             }
             
+            var listAttribute = AttributeUtility.GetAttribute<ListViewAttribute>(property);
+            if(listAttribute != null) {
+                DrawListView(property);
+                return true;
+            }
+            
             return false;
         }
         
         protected virtual void DrawButtons() {
             foreach (var method in m_buttonMethods) {
+                var buttonAttribute = method.GetCustomAttribute<ButtonAttribute>();
+                if (buttonAttribute == null) continue;
+                
+                GUI.backgroundColor = AttributeEditorStyles.GetColor(buttonAttribute.Color);
                 if (!GUILayout.Button(ObjectNames.NicifyVariableName(method.Name))) continue;
+                GUI.backgroundColor = Color.white;
+                
                 method.Invoke(target, method.GetParameters().Select(p => p.DefaultValue).ToArray());
                 EditorUtility.SetDirty(target);
                 EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
@@ -152,6 +186,42 @@ namespace TTG.Attributes {
                 }
             }
                 
+            EditorGUILayout.EndVertical();
+            EditorGUILayout.EndVertical();
+        }
+
+        protected virtual void DrawListView(SerializedProperty listProperty) {
+            if(listProperty.propertyType != SerializedPropertyType.Generic) return;
+            if (!listProperty.isArray) {
+                Debug.LogWarning("Property is not an array"); return;
+            }
+            
+            if (!m_foldoutStates.ContainsKey(listProperty.displayName)) {
+                m_foldoutStates[listProperty.displayName] = new EditorBool($"{target.GetInstanceID()}.{listProperty.displayName}", false);
+            }
+
+            var reorderableList = m_reorderableLists[listProperty];
+            
+            EditorGUILayout.BeginVertical(AttributeEditorStyles.ContainerStyle(new RectOffset(15, 7, -2,0 ),true));
+            Rect verticalGroup = EditorGUILayout.BeginVertical();
+            
+            AttributeEditorStyles.DrawIdentifierLine(verticalGroup, Color.green);
+            EditorGUILayout.BeginHorizontal();
+            m_foldoutStates[listProperty.displayName].Value = EditorGUILayout.Foldout(m_foldoutStates[listProperty.displayName].Value, listProperty.displayName, AttributeEditorStyles.FoldoutStyle(true, 12));
+            GUILayout.FlexibleSpace();
+            // size label thats text layout is right aligned
+            var sizeLabel = new GUIContent($"Size: {listProperty.arraySize}");
+            var sizeLabelStyle = new GUIStyle(EditorStyles.label) {
+                alignment = TextAnchor.MiddleRight,
+                fontStyle = FontStyle.Bold,
+                fontSize = 10
+            };
+            EditorGUILayout.LabelField(sizeLabel, sizeLabelStyle);
+            EditorGUILayout.EndHorizontal();
+            if(m_foldoutStates[listProperty.displayName].Value) {
+                reorderableList?.DoLayoutList();
+            }
+            
             EditorGUILayout.EndVertical();
             EditorGUILayout.EndVertical();
         }

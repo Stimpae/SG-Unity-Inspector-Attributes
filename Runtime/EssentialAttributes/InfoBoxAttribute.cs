@@ -1,22 +1,16 @@
 using System;
 using System.Diagnostics;
+using UnityEditor;
 using UnityEngine;
 
 namespace TTG.Attributes {
-    public enum EInfoMessageType {
-        NONE,
-        INFO,
-        WARNING,
-        ERROR
-    }
-    
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
     [Conditional("UNITY_EDITOR")]
     public class InfoBoxAttribute : PropertyAttribute {
         public readonly string text;
-        public readonly EInfoMessageType messageType;
+        public readonly MessageType messageType;
 
-        public InfoBoxAttribute(string text, EInfoMessageType messageType = EInfoMessageType.INFO) {
+        public InfoBoxAttribute(string text, MessageType messageType = MessageType.Info) {
             this.text = text;
             this.messageType = messageType;
         }

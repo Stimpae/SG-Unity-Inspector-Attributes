@@ -13,6 +13,7 @@ namespace TTG.Attributes {
         private Editor m_editor;
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {
+            EditorGUI.BeginProperty(position, label, property);
             if (property.objectReferenceValue == null) {
                 EditorGUI.PropertyField(position, property, label);
                 return;
@@ -44,6 +45,7 @@ namespace TTG.Attributes {
             else {
                 Debug.LogWarning($"ScriptableObjectDrawer: {propertyType} is not a ScriptableObject");
             }
+            EditorGUI.EndProperty();
         }
 
         private float GetInspectorHeight(SerializedProperty property) {
@@ -73,8 +75,7 @@ namespace TTG.Attributes {
                     height += EditorGUI.GetPropertyHeight(prop, true);
                 }
             }
-
-            return height + 10f;
+            return height + 7.5f;
         }
         
         private void DrawScriptableInspector(SerializedProperty property) {

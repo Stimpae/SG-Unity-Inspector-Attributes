@@ -4,6 +4,12 @@ using UnityEngine;
 
 namespace TTG.Attributes {
     public static class AttributeEditorStyles {
+        private static Texture2D _savedHelpBoxBackground;
+        static AttributeEditorStyles() {
+            GUIStyle helpBoxStyle = GUI.skin.GetStyle("helpbox");
+            _savedHelpBoxBackground = helpBoxStyle.normal.background;
+        }
+        
         public static GUIStyle ContainerStyle(RectOffset padding, bool dark = false) {
             var style = new GUIStyle(GUI.skin.box) { padding = padding };
             if (!dark) {
@@ -59,22 +65,19 @@ namespace TTG.Attributes {
             EditorGUI.DrawRect(identifierRect, targetColor);
         }
         
-        public static void DrawColouredHelpBox(Action action, Color32 color) {
+        public static void DrawColouredHelpBox(Action action, Color32 backgroundColor, Color32 textColor) {
             GUIStyle redWarningBoxStyle = GUI.skin.GetStyle("helpbox");
-            var savedBackground = redWarningBoxStyle.normal.background;
-            var savedTextColor = redWarningBoxStyle.normal.textColor;
-            
             Texture2D redWarningBoxBackgroundTexture = new Texture2D(2, 2);
-            redWarningBoxBackgroundTexture.CreateColouredTexture(color);
+            redWarningBoxBackgroundTexture.CreateColouredTexture(backgroundColor);
             redWarningBoxStyle.normal.background = redWarningBoxBackgroundTexture;
-            redWarningBoxStyle.normal.textColor = Color.black;
+            redWarningBoxStyle.normal.textColor = textColor;
             redWarningBoxStyle.fontSize = 11;
             redWarningBoxStyle.padding = new RectOffset(8, 8, 8, 2);
             
             action?.Invoke();
             
-            redWarningBoxStyle.normal.background = savedBackground;
-            redWarningBoxStyle.normal.textColor = savedTextColor;
+            redWarningBoxStyle.normal.background = _savedHelpBoxBackground;
+            redWarningBoxStyle.normal.textColor = Color.white;
         }
         
         public static void CreateColouredTexture(this Texture2D texture2D, Color32 color) {
@@ -108,8 +111,9 @@ namespace TTG.Attributes {
                 6 => new Color32(255, 235, 205, 255),
                 7 => new Color32(255, 127, 80, 255),
                 8 => new Color32(139, 0, 139, 255),
-                9 => new Color32(218, 165, 32, 255), 
-                10 => new Color32(255, 100, 50, 255),
+                9 => new Color32(218, 165, 32, 255),
+                10 => new Color32(255, 100, 20, 255),
+                11 => new Color32(45, 45, 45, 255),
                 _ => new Color32(255, 255, 255, 255)
             };
         }

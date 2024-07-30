@@ -16,7 +16,7 @@ namespace TTG.Attributes.Examples {
         [Label("Example Label Of Fury", true)] public string exampleLabelString;
         [Label()] public string emptyLabelString;
 
-        [InfoBox("Example information box, this is some information about this example script. we are using this to show off how things are done", EInfoMessageType.WARNING)]
+        [InfoBox("Example information box, this is some information about this example script. we are using this to show off how things are done")]
         [Title("Example Title", "Example Subtitle", TitleAlignment.LEFT, true, true)]
         public float exampleFloat;
         public string exampleString;
@@ -35,8 +35,8 @@ namespace TTG.Attributes.Examples {
         [Required("This field is required",true)] public GameObject requiredField; 
         [Validation("ValidateAnimator", "This field requires setup", true)] public Animator animator;
         public bool ValidateAnimator() { return ( animator == null); }
-        
-        //[ListView] public List<int> exampleList = new List<int> {1, 2, 3, 4, 5};
+
+        [ListView] public List<int> exampleList = new List<int>();
         // min max slider
         [MinMax(5, 10)] public Vector2 minMaxVector;
 
@@ -50,11 +50,12 @@ namespace TTG.Attributes.Examples {
         [ButtonField(nameof(ExampleMethod), "Example Button Field", 30)]
         [Holder] public DecoratorHolder decoratorHolder2;
 
-        [InfoBox("Groups and buttons will always be displayed at the button of the inspector due to the way it is constructed in the editor.", EInfoMessageType.NONE)]
+        [InfoBox("Groups and buttons will always be displayed at the button of the inspector due to the way it is constructed in the editor.")]
         [Holder] public DecoratorHolder infoBox;
         
         [FoldoutGroup("Example Foldout Group 2", 4)] public string exampleString2;
         [FoldoutGroup("Example Foldout Group 2")] public bool exampleBool3;
+        [FoldoutGroup("Example Foldout Group 2")] [MinMax(0, 10)] public Vector2 minMaxVector1;
         
         [Button("Example Button")]
         public void ExampleMethod() {

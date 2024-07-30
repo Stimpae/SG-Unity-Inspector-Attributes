@@ -4,11 +4,11 @@
 
 # `Unity Inspector Attributes`
 
-A collection of useful Inspector Attributes for Unity.
+A collection of useful Editor Attributes for Unity.
 
 ## Example Usage
 
-// i will get round to writing documentations shortly, for the moment most of the attributes can be found in the example scripts in the folder examples.
+I will get round to writing documentations shortly, for the moment most of the attributes can be found in the example scripts in the folder examples.
 
 ## Why would i need this?
 
